@@ -1,12 +1,13 @@
 package com.reuniao.backend.service;
 
+import com.reuniao.backend.dto.UsuarioCreateDTO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.reuniao.backend.entities.Usuario;
 import com.reuniao.backend.repository.UsuarioRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
 
 @Service
 public class UsuarioService {
@@ -19,17 +20,24 @@ public class UsuarioService {
         this.encoder = encoder;
     }
 
-    @PostMapping("/criar")
-    public Usuario salvar(Usuario usuario){
+    public Usuario salvar(UsuarioCreateDTO dto){
 
-        usuario.setSenha(encoder.encode(usuario.getSenha()));
+        Usuario usuario = new Usuario();
+
+        usuario.setNome(dto.nome());
+        usuario.setEmail(dto.email());
+
+        usuario.setSenha(encoder.encode(dto.senha()));
 
         return repository.save(usuario);
     }
 
-    @GetMapping("/teste")
-    public String teste(){
-        return "rota protegida funcionando";
+    public List<Usuario> listar(){
+        return repository.findAll();
     }
 
+    public Usuario buscarPorEmail(String email){
+        return repository.findByEmail(email)
+                .orElseThrow();
+    }
 }

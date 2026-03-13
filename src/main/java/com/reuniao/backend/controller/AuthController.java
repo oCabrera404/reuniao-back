@@ -5,6 +5,7 @@ import com.reuniao.backend.entities.Usuario;
 import com.reuniao.backend.repository.UsuarioRepository;
 import com.reuniao.backend.security.JwtService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,15 +14,16 @@ public class AuthController {
 
     private final UsuarioRepository repository;
     private final JwtService jwtService;
-    private final BCryptPasswordEncoder encoder;
+    private final PasswordEncoder encoder;
+
 
     public AuthController(UsuarioRepository repository,
-                          JwtService jwtService,
-                          BCryptPasswordEncoder encoder) {
+                          PasswordEncoder encoder,
+                          JwtService jwtService) {
 
         this.repository = repository;
-        this.jwtService = jwtService;
         this.encoder = encoder;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/login")

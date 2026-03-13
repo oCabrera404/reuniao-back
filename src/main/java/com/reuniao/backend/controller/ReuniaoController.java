@@ -1,7 +1,10 @@
 package com.reuniao.backend.controller;
 
+import com.reuniao.backend.dto.ReuniaoDTO;
 import com.reuniao.backend.entities.Reuniao;
-import com.reuniao.backend.repository.ReuniaoRepository;
+import com.reuniao.backend.service.ReuniaoService;
+
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,24 +14,29 @@ import java.util.List;
 @CrossOrigin("*")
 public class ReuniaoController {
 
-    private final ReuniaoRepository repository;
+    private final ReuniaoService service;
 
-    public ReuniaoController(ReuniaoRepository repository) {
-        this.repository = repository;
+    public ReuniaoController(ReuniaoService service){
+        this.service = service;
     }
 
-    @GetMapping
-    public List<Reuniao> listar() {
-        return repository.findAll();
+    @PostMapping("/criar")
+    public Reuniao criar(@RequestBody ReuniaoDTO dto, Authentication auth){
+        return service.criar(dto, auth);
     }
 
-    @PostMapping()
-    public Reuniao criar(@RequestBody Reuniao reuniao) {
-        return repository.save(reuniao);
+    @GetMapping("/listar")
+    public List<Reuniao> listar(){
+        return service.listar();
+    }
+
+    @GetMapping("/{id}")
+    public Reuniao buscar(@PathVariable Long id){
+        return service.buscarPorId(id);
     }
 
     @DeleteMapping("/{id}")
-    public void deletar(@PathVariable Long id) {
-        repository.deleteById(id);
+    public void deletar(@PathVariable Long id){
+        service.deletar(id);
     }
 }

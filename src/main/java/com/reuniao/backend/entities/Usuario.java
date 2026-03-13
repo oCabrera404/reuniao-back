@@ -1,19 +1,21 @@
 package com.reuniao.backend.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.antlr.v4.runtime.misc.NotNull;
+
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(schema = "usuarios")
 public class Usuario {
 
     @Id
@@ -21,6 +23,13 @@ public class Usuario {
     private Long id;
 
     private String nome;
+
+    @Column(unique = true)
     private String email;
+
+    @JsonIgnore
     private String senha;
+
+    @ManyToMany(mappedBy = "participantes")
+    private List<Reuniao> reunioes;
 }
