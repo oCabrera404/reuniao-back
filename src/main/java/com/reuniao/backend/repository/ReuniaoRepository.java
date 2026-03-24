@@ -12,12 +12,12 @@ import java.util.List;
 public interface ReuniaoRepository extends JpaRepository<Reuniao, Long> {
     List<Reuniao> findByCriadorEmail(String email);
     @Query("""
-        SELECT COUNT(r) > 0 FROM Reuniao r
-        WHERE r.data = :data
-        AND r.sala.id = :salaId
+        SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END
+        FROM Reuniao r
+        WHERE r.sala.id = :salaId
+        AND r.data = :data
         AND (
-              r.inicio < :termino
-              AND r.termino > :inicio
+            (:inicio < r.termino) AND (:termino > r.inicio)
         )
     """)
     boolean existsConflito(

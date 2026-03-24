@@ -1,5 +1,8 @@
 package com.reuniao.backend.dto;
 
+import com.reuniao.backend.entities.enums.StatusReuniao;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +19,7 @@ public class ReuniaoDTO {
     private LocalDate data;
     private LocalTime inicio;
     private LocalTime termino;
-
+    private StatusReuniao status;
     private Long salaId;
 
     private List<String> participantesEmails;

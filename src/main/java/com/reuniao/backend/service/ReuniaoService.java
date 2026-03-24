@@ -3,12 +3,15 @@ package com.reuniao.backend.service;
 import com.reuniao.backend.dto.ReuniaoDTO;
 import com.reuniao.backend.entities.Sala;
 import com.reuniao.backend.entities.Usuario;
+import com.reuniao.backend.entities.enums.StatusReuniao;
 import com.reuniao.backend.entities.enums.StatusSala;
 import com.reuniao.backend.repository.SalaRepository;
 import com.reuniao.backend.repository.UsuarioRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 
@@ -52,6 +55,7 @@ public class ReuniaoService {
         reuniao.setTermino(dto.getTermino());
         reuniao.setCriador(criador);
         reuniao.setSala(sala);
+        reuniao.setStatus(StatusReuniao.CONFIRMADA);
 
         if (dto.getParticipantesEmails() != null && !dto.getParticipantesEmails().isEmpty()) {
 
@@ -66,6 +70,13 @@ public class ReuniaoService {
         return reuniaoRepository.findAll();
     }
 
+    public List<Reuniao> minhasReunioes(Authentication auth) {
+
+        String email = auth.getName();
+
+        return reuniaoRepository.findByCriadorEmail(email);
+    }
+
     public Reuniao buscarPorId(Long id, Authentication auth) {
 
         Reuniao reuniao = reuniaoRepository.findById(id)
@@ -78,7 +89,27 @@ public class ReuniaoService {
         return reuniao;
     }
 
-    public void deletar(Long id) {
-        reuniaoRepository.deleteById(id);
+    public void cancelar(Long id) {
+
+        Reuniao reuniao = reuniaoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Reunião não encontrada"));
+
+        reuniao.setStatus(StatusReuniao.CANCELADA);
+
+        reuniaoRepository.save(reuniao);
+    }
+
+    public List<Sala> buscarSalasDisponiveis(LocalDate data, LocalTime inicio, LocalTime termino) {
+
+        List<Sala> todasSalas = salaRepository.findAll();
+
+        return todasSalas.stream()
+                .filter(sala -> !reuniaoRepository.existsConflito(
+                        data,
+                        inicio,
+                        termino,
+                        sala.getId()
+                ))
+                .toList();
     }
 }

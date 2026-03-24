@@ -20,10 +20,6 @@ public class SalaService {
         return salaRepository.save(sala);
     }
 
-    public List<Sala> listarDiposniveis(){
-        return salaRepository.findByStatus(StatusSala.DISPONIVEL);
-    }
-
     public List<Sala> listar(){
         return salaRepository.findAll();
     }

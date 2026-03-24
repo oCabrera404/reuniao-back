@@ -2,6 +2,7 @@ package com.reuniao.backend.controller;
 
 import com.reuniao.backend.dto.ReuniaoDTO;
 import com.reuniao.backend.entities.Reuniao;
+import com.reuniao.backend.entities.enums.StatusReuniao;
 import com.reuniao.backend.service.ReuniaoService;
 
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class ReuniaoController {
 
     private final ReuniaoService reuniaoService;
 
-    public ReuniaoController(ReuniaoService service){
+    public ReuniaoController(ReuniaoService service) {
         this.reuniaoService = service;
     }
 
@@ -25,6 +26,8 @@ public class ReuniaoController {
     public ResponseEntity<?> criar(
             @RequestBody ReuniaoDTO dto,
             Authentication authentication) {
+
+            dto.setStatus(StatusReuniao.CONFIRMADA);
 
         return ResponseEntity.ok(
                 reuniaoService.criar(dto, authentication)
@@ -36,13 +39,13 @@ public class ReuniaoController {
         return reuniaoService.buscarPorId(id, auth);
     }
 
-    @GetMapping("/listar")
-    public List<Reuniao> listar(){
-        return reuniaoService.listar();
+    @GetMapping("/minhas")
+    public List<Reuniao> minhasReunioes(Authentication auth) {
+        return reuniaoService.minhasReunioes(auth);
     }
 
-    @DeleteMapping("/{id}")
-    public void deletar(@PathVariable Long id){
-        reuniaoService.deletar(id);
+    @PutMapping("/cancelar/{id}")
+    public void cancelar(@PathVariable Long id) {
+        reuniaoService.cancelar(id);
     }
 }

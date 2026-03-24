@@ -1,5 +1,7 @@
 package com.reuniao.backend.entities;
 
+import com.reuniao.backend.entities.enums.StatusReuniao;
+import com.reuniao.backend.entities.enums.StatusSala;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,6 +32,9 @@ public class Reuniao {
     private LocalDate data;
     private LocalTime inicio;
     private LocalTime termino;
+
+    @Enumerated(EnumType.STRING)
+    private StatusReuniao status;
 
     @ManyToOne
     @JoinColumn(name = "criador_id")
