@@ -1,13 +1,17 @@
 package com.reuniao.backend.entities;
 
+import ch.qos.logback.core.status.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.reuniao.backend.entities.enums.RoleUsers;
+import com.reuniao.backend.entities.enums.StatusUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.antlr.v4.runtime.misc.NotNull;
 
+import javax.management.relation.Role;
 import java.util.List;
 
 @Entity
@@ -29,9 +33,25 @@ public class Usuario {
     private String email;
 
     @JsonIgnore
+    @JsonIgnoreProperties({"reunioes"})
     private String senha;
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "participantes")
-    private List<Reuniao> reunioes;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private StatusUser status;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private RoleUsers roleUsers;
+
+    @PrePersist
+    public void prePersist() {
+        if (roleUsers == null) {
+            roleUsers = roleUsers.USUARIO;
+        }
+
+        if (status == null) {
+            status = status.ATIVO;
+        }
+    }
 }

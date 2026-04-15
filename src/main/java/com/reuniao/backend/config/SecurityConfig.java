@@ -41,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
                         .requestMatchers("salas/**").permitAll()
                         .requestMatchers("/reunioes/**").permitAll()
+                        .requestMatchers("/convites/**").permitAll()
                         .anyRequest().authenticated()
                 )
 

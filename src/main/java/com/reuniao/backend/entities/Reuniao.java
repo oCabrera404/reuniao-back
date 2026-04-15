@@ -40,13 +40,8 @@ public class Reuniao {
     @JoinColumn(name = "criador_id")
     private Usuario criador;
 
-    @ManyToMany
-    @JoinTable(
-            name = "reuniao_usuarios",
-            joinColumns = @JoinColumn(name = "reuniao_id"),
-            inverseJoinColumns = @JoinColumn(name = "usuario_id")
-    )
-    private Set<Usuario> participantes = new HashSet<>();
+    @OneToMany(mappedBy = "reuniao", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ParticipacaoReuniao> participacoes = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "sala_id")
